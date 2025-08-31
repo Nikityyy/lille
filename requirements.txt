@@ -1,0 +1,12 @@
+torch
+tiktoken
+html2term
+datasets
+numpy
+tqdm
+wandb
+onnx
+onnxsim
+onnxruntime_tools
+onnxruntime-gpu
+triton

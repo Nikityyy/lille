@@ -1,0 +1,7 @@
+checkpoints/best_model.pt
+checkpoints_ft/best_model.pt
+data/fineweb_edu_sample_10BT/train.npz
+data/fineweb_edu_sample_10BT/val.npz
+data/smol-sft/train.npz
+data/smol-sft/train.txt
+data/smol-sft/val.npz

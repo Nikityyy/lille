@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Markdown Table to HTML/PNG Converter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            font-family: "Open Sans", sans-serif;
+        }
+
+        body {
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .editor,
+        .preview {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 300px;
+            font-family: monospace;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        #tablePreview {
+            display: inline-block;
+        }
+
+        .preview table {
+            display: block;
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview table th,
+        .preview table td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #f0f0f0;
+        }
+
+        .preview table th {
+            background-color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .preview table td {
+            font-size: 14px;
+        }
+
+        .preview table tr:nth-child(even) td {
+            background-color: #f8faff;
+        }
+
+        .preview table td:not(:first-child) {
+            text-align: center;
+        }
+
+        .preview table td:first-child {
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .preview table tr td[colspan="5"] {
+            padding: 0;
+        }
+
+        .preview table tr td:first-child:not(:only-child) {
+            color: #333;
+        }
+
+        .preview table td:nth-child(2):not([colspan]) {
+            color: #0066ff;
+        }
+
+        .preview table th .model-params {
+            font-size: 12px;
+            color: #666;
+            font-weight: normal;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .preview table td .description {
+            display: block;
+            font-size: 12px;
+            color: #777;
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        .preview table td b {
+            font-weight: 700;
+            color: inherit;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #0052cc;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 18px;
+        }
+
+        #downloadLink {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="editor">
+            <h2>Markdown Input</h2>
+            <textarea onKeyUp="convertTable()" id="markdownInput">
+| Benchmark  | Lille 130M Instruct  | SmolLM2 135M Instruct        | SmolLM2 360M Instruct        |
+| ---------- | -------------------- | ---------------------------- | ---------------------------- |
+| ARC-C      | 15.05 (0-shot)       | 23.41 (0-shot)               | 23.41 (0-shot)               |
+| ARC-E      | 21.40 (0-shot)       | 24.74 (0-shot)               | 28.60 (0-shot)               |
+| GPQA       | 12.73 (0-shot)       | 0.00  (0-shot)               | 0.67  (0-shot)               |
+| GSM8K      | 7.73  (0-shot)       | 1.40  (5-shot)               | 7.43  (5-shot)               |
+| IFEval     | 9.01  (0-shot)       | 28.83 (0-shot)               | 38.42 (0-shot)               |
+| MATH (L5)  | 1.91  (0-shot)       | 0.30  (0-shot)               | 1.51  (0-shot)               |
+| MMLU       | 22.76 (0-shot)       | 29.30 (cloze)                | 32.80 (cloze)                |
+</textarea>
+            <div class="controls">
+                <button onclick="exportToPNG()">Export as PNG</button>
+            </div>
+        </div>
+        <div class="preview">
+            <h2>HTML Preview</h2>
+            <div id="tablePreview"></div>
+            <a id="downloadLink" download="table.png"></a>
+        </div>
+    </div>
+    <script>
+        marked.use({
+            breaks: true,
+            gfm: true,
+            pedantic: false
+        });
+
+        function processHeaderContent(text) {
+            if (text.includes(' ')) {
+                const parts = text.trim().split(/\s+/);
+                const params = parts.pop();
+                const modelName = parts.join(' ');
+                return `${modelName}<span class="model-params">${params}</span>`;
+            }
+            return text;
+        }
+
+        function processTable() {
+            const table = document.getElementById('tablePreview').querySelector('table');
+            if (!table) return;
+
+            const tbody = table.querySelector('tbody');
+            const dataRows = Array.from(tbody.querySelectorAll('tr'));
+
+            dataRows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td')).slice(1);
+                if (cells.length === 0) return;
+
+                const values = cells.map(cell => {
+                    const text = cell.textContent.trim();
+                    if (text.includes('NULL')) {
+                        return -Infinity;
+                    }
+                    const num = parseFloat(text);
+                    return isNaN(num) ? -Infinity : num;
+                });
+
+                const max = Math.max(...values);
+
+                cells.forEach((cell, index) => {
+                    const originalText = cell.textContent.trim();
+
+                    if (originalText.includes('NULL')) {
+                        cell.innerHTML = '/';
+                        return;
+                    }
+
+                    const value = parseFloat(originalText);
+                    if (isNaN(value)) {
+                        cell.textContent = originalText;
+                        return;
+                    }
+
+                    const descriptionMatch = originalText.match(/\((.*)\)/);
+                    const descriptionHtml = descriptionMatch ? `<span class="description">(${descriptionMatch[1]})</span>` : '';
+
+                    const formattedNumber = value.toFixed(2);
+
+                    if (values[index] === max && max > -Infinity) {
+                        cell.innerHTML = `<b>${formattedNumber}</b>${descriptionHtml}`;
+                    } else {
+                        cell.innerHTML = `${formattedNumber}${descriptionHtml}`;
+                    }
+                });
+            });
+
+        }
+
+        function convertTable() {
+            let markdown = document.getElementById('markdownInput').value;
+            let html = marked.parse(markdown);
+
+            html = html.replace(/<th[^>]*>(.*?)<\/th>/g, (match, content) => {
+                return `<th>${processHeaderContent(content.trim())}</th>`;
+            });
+
+            document.getElementById('tablePreview').innerHTML = html;
+            processTable();
+        }
+
+        function exportToPNG() {
+            const element = document.getElementById('tablePreview');
+            html2canvas(element, {
+                backgroundColor: 'white',
+                scale: 2,
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                const link = document.getElementById('downloadLink');
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+
+        convertTable();
+    </script>
+</body>
+
+</html>
