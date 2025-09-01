@@ -198,7 +198,7 @@ def configure_optimizers(model, weight_decay, learning_rate, betas):
     if master_process:
         printc(f"  <#cccccc>Num decayed parameter tensors:</#cccccc> <b>{len(decay_params)}</b>, with <b>{num_decay_params:,}</b> parameters")
         printc(f"  <#cccccc>Num non-decayed parameter tensors:</#cccccc> <b>{len(nodecay_params)}</b>, with <b>{num_nodecay_params:,}</b> parameters<br/>")
-    optimizer = SophiaG(optim_groups, lr=learning_rate, betas=betas, rho=0.05, weight_decay=weight_decay, eps=1e-15, bs=tokens_per_optimizer_step)
+    optimizer = SophiaG(optim_groups, lr=learning_rate, betas=betas, rho=0.05, weight_decay=weight_decay, bs=tokens_per_optimizer_step)
     return optimizer
 
 def get_cosine_schedule_with_warmup_scheduler(optimizer, num_warmup_steps, num_training_steps, min_lr_ratio_val=0.1):

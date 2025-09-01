@@ -5,3 +5,4 @@ data/fineweb_edu_sample_10BT/val.npz
 data/smol-sft/train.npz
 data/smol-sft/train.txt
 data/smol-sft/val.npz
+check.py
