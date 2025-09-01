@@ -23,7 +23,7 @@ The model comes in two versions:
 
 The model architecture is a modern Transformer decoder featuring Grouped-Query Attention (GQA), RoPE, and RMSNorm, making it efficient and performant for its size.
 
-*Note on parameter count: While the model name is `130M` for simplicity, the actual parameter count is closer to 140 million.*
+*Note on parameter count: While the model name is `130M` for simplicity, the actual parameter count is 127.17 million.*
 
 ## 📊 Evaluation
 
