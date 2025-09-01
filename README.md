@@ -232,6 +232,13 @@ Lille is a key component of my initiative to build and release a complete, truly
 *   **Optimizer:** **[Sophia-Triton](https://github.com/Nikityyy/Sophia-Triton)** - A memory-efficient, Triton-based implementation of the SophiaG optimizer.
 *   **Evaluations:** **[simple-eval](https://github.com/Nikityyy/simple-eval)** - A straightforward framework for evaluating model performance using an LLM as a Judge.
 
+## 🙏 Credits
+
+Lille’s training scripts and architecture were inspired by and build upon the work of:
+
+* **nanoGPT** – A minimal and efficient PyTorch implementation of GPT training: [https://github.com/karpathy/nanoGPT](https://github.com/karpathy/nanoGPT)
+* **gpt-oss** – The open models from OpenAI: [https://github.com/openai/gpt-oss](https://github.com/openai/gpt-oss)
+
 ## 📜 License
 
 This project is licensed under the Apache-2.0 License.
