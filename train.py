@@ -25,11 +25,11 @@ out_dir = 'checkpoints'
 eval_interval = 500
 log_interval = 1
 eval_iters = 100
-# resume_checkpoint = None
-resume_checkpoint = "checkpoints_ft/ckpt_iter_73000.pt"
+resume_checkpoint = None
+# resume_checkpoint = "checkpoints/best_model.pt"
 
 # --- Finetuning Settings ---
-finetune = True
+finetune = False
 finetune_out_dir = 'checkpoints_ft'
 finetune_data_dir = 'data/smol-sft'
 finetune_learning_rate = 1e-5
@@ -198,6 +198,7 @@ def configure_optimizers(model, weight_decay, learning_rate, betas):
     if master_process:
         printc(f"  <#cccccc>Num decayed parameter tensors:</#cccccc> <b>{len(decay_params)}</b>, with <b>{num_decay_params:,}</b> parameters")
         printc(f"  <#cccccc>Num non-decayed parameter tensors:</#cccccc> <b>{len(nodecay_params)}</b>, with <b>{num_nodecay_params:,}</b> parameters<br/>")
+    # If you get the following error: "got an unexpected keyword argument 'bs'", then remove bs=tokens_per_optimizer_step
     optimizer = SophiaG(optim_groups, lr=learning_rate, betas=betas, rho=0.05, weight_decay=weight_decay, bs=tokens_per_optimizer_step)
     return optimizer
 

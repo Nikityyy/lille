@@ -140,7 +140,7 @@ pip install -r requirements.txt
 
 **Note on the Optimizer:** The default `Sophia-Triton` optimizer requires the [Triton](https://triton-lang.org/main/getting-started/installation.html) library. Triton is officially supported on Linux with NVIDIA GPUs. While experimental installation on Windows is possible, it can be a complex and difficult process. For a much simpler setup on **Windows and macOS**, or if you prefer not to install Triton, it is highly recommended to use a pure PyTorch implementation of Sophia instead:
 
-1.  Replace the contents of the `sophia_triton.py` file with the code from [this link](https://github.com/Liuhong99/Sophia/blob/main/sophia.py).
+1.  Replace the contents of the `sophia_triton.py` file with the code from [this link](https://github.com/Nikityyy/Sophia-Triton/blob/main/sophia.py).
 2.  The `train.py` script should work without any import changes, as the class name `SophiaG` is the same.
 
 #### 2. Data Preparation
