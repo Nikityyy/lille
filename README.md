@@ -37,9 +37,21 @@ All evaluations were conducted using **[simple-eval](https://github.com/Nikityyy
 
 ## 🚀 How to Use
 
-### 1. SimpleAI SDK (Recommended for Easy Use)
+There are several ways to use the Lille models, from easy-to-use graphical interfaces to advanced programmatic control.
 
-The easiest way to get started with Lille is by using the `simpleai-sdk`, which handles all the boilerplate for you and provides a simple, high-level API for both Hugging Face and ONNX backends.
+### 1. LM Studio (Easiest for Chat)
+
+LM Studio provides a simple graphical interface to run LLMs on your local machine. It's the easiest way to start chatting with Lille.
+
+1.  **Download & Install:** Get [LM Studio](https://lmstudio.ai/) for your operating system (Windows, Mac, or Linux).
+2.  **Search for the Model:** Open LM Studio and click the **magnifying glass** icon on the left.
+3.  **Find Lille:** In the search bar, type `Lille` or `Nikity`. You will find the models I have uploaded.
+4.  **Download a GGUF:** On the right-hand side, you'll see a list of GGUF files. Download a recommended version like `lille-130m-instruct-f16.gguf`.
+5.  **Chat:** Click the **speech bubble** icon on the left. At the top, select the model you just downloaded. Now you can start a conversation!
+
+### 2. SimpleAI SDK (Recommended for Programmatic Use)
+
+The easiest way to use Lille programmatically is with the `simpleai-sdk`, which handles all the boilerplate for you and provides a simple, high-level API for both Hugging Face and ONNX backends.
 
 ```bash
 pip install simpleai-sdk
@@ -70,7 +82,7 @@ response = model.generate(prompt, max_new_tokens=50, temperature=0.9)
 print(f"\n--- Completion Example ---\n{prompt}{response}")
 ```
 
-### 2. Standard Hugging Face Transformers (this also needs `simpleai-sdk` currently)
+### 3. Standard Hugging Face Transformers (this also needs `simpleai-sdk` currently)
 
 You can also use the model directly with the `transformers` library for more advanced use cases.
 
